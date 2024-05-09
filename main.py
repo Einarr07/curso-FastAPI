@@ -1,10 +1,18 @@
 # Importar FastAPI
 from fastapi import FastAPI
+from routes import products, users
+from fastapi.staticfiles import StaticFiles
 
 # Crear una instancia de la aplicación FastAPI
 app = FastAPI()
 
 # Nota: Para ejecutar el servidor, use el comando: python -m uvicorn main:app --reload
+
+# Routers
+app.include_router(products.router)
+app.include_router(users.router)
+# Forma para exponer recursos estaticos: /static/images/mouredev_curso_python.jpg
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Definir un endpoint para la raíz de la aplicación
 @app.get("/")

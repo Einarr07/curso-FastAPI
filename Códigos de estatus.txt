@@ -1,0 +1,17 @@
+2xx - Éxito: Indica que la solicitud fue recibida, comprendida y aceptada correctamente.
+200 OK: La solicitud se completó con éxito.
+201 Created: Se ha creado un nuevo recurso como resultado de la solicitud.
+204 No Content: La solicitud se completó con éxito, pero no hay contenido para devolver.
+------------------------------------------------------------------------------------------
+4xx - Errores del cliente: Indica que hubo un error en la solicitud del cliente.
+400 Bad Request: La solicitud no se pudo entender debido a una sintaxis incorrecta.
+401 Unauthorized: El cliente no está autorizado a acceder al recurso.
+403 Forbidden: El cliente no tiene permiso para acceder al recurso.
+404 Not Found: El recurso solicitado no se pudo encontrar en el servidor.
+405 Method Not Allowed: El método de solicitud utilizado no está permitido para el recurso solicitado.
+409 Conflict: La solicitud no se pudo completar debido a un conflicto con el estado actual del recurso.
+------------------------------------------------------------------------------------------
+5xx - Errores del servidor: Indica que hubo un error en el servidor al procesar la solicitud.
+500 Internal Server Error: Error genérico del servidor cuando algo sale mal.
+502 Bad Gateway: El servidor actuó como un proxy o puerta de enlace y recibió una respuesta no válida del servidor ascendente.
+503 Service Unavailable: El servidor no está listo para manejar la solicitud.

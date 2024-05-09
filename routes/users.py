@@ -1,9 +1,12 @@
 # Importaciones
-from fastapi import FastAPI
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 # Crear una instancia de la aplicación FastAPI
-app = FastAPI()
+router = APIRouter(
+    tags=["users"],
+    responses={404: {"Message": "No encontrado"}}
+)
 
 # Nota: Para ejecutar el servidor, use the command: python -m uvicorn users:app --reload
 
@@ -34,7 +37,7 @@ users_list = [
 ]
 
 # Definir un endpoint para devolver una lista de usuarios en formato JSON
-@app.get("/users_json")
+@router.get("/users_json")
 async def users_json():
     """
     Devuelve una lista de usuarios en formato JSON.
@@ -46,7 +49,7 @@ async def users_json():
     ]
 
 # Definir un endpoint para devolver la lista de usuarios
-@app.get("/users")
+@router.get("/users")
 async def users():
     """
     Devuelve la lista de usuarios.
@@ -54,7 +57,7 @@ async def users():
     return users_list
 
 # Definir un endpoint para recuperar un usuario por ID utilizando parámetros de ruta
-@app.get("/user/{id}")
+@router.get("/user/{id}")
 async def users(id: int):
     """
     Recupera un usuario por ID.
@@ -68,7 +71,7 @@ async def users(id: int):
         return {"Error: No se ha encontrado el usuario"}
 
 # Definir un endpoint para recuperar un usuario por ID utilizando parámetros de consultas
-@app.get("/user-query/")
+@router.get("/user-query/")
 async def users(id: int):
     """
     Recupera un usuario por ID utilizando parámetros de consulta.
@@ -91,39 +94,34 @@ def search_user(id: int):
         return {"Error: No se ha encontrado el usuario"}
 
 # Definir un endpoint para crear un usuario
-@app.post("/user/")
+@router.post("/user/", response_model=User, status_code=201)
 async def create_user(user: User):
     if type(search_user(user.id)) == User:
-        return{"Error": "El usuario ya existe"}
-    else:
-        users_list.append(user)
+        raise HTTPException(status_code=404, detail="El usuario ya existe")
+    
+    users_list.append(user)
+    return user
 
 # Definir un endpoint para actualizar un usuario
-@app.put("/user/")
+@router.put("/user/")
 async def update_user(user: User):
-
-    found = False
-
+    """
+    Actualizar un usuario en la lista de usuarios.
+    """
     for index, saved_user in enumerate(users_list):
         if saved_user.id == user.id:
             users_list[index] = user
-            found = True
-
-    if not found:
-        return {"Error": "No se ha actualizado el usuario"}
-    else:
-        return user
+            return user
+    return {"Error": "No se ha actualizado el usuario"}
 
 # Definir un endpoint para eliminar un usuario
-@app.delete("/user/{id}")
+@router.delete("/user/{id}")
 async def delete_user(id: int):
-
-    found = False
-
+    """
+    Eliminar un usuario de la lista de usuarios.
+    """
     for index, saved_user in enumerate(users_list):
         if saved_user.id == id:
             del users_list[index]
-            found = True
-
-    if not found:
-        return {"Error": "No se ha eliminado el usuario"}
+            return {"Mensaje": "Usuario eliminado"}
+    return {"Error": "No se ha eliminado el usuario"}
