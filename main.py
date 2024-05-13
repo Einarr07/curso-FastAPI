@@ -1,6 +1,6 @@
 # Importar FastAPI
 from fastapi import FastAPI
-from routes import products, users
+from routes import products, users, basic_auth_users, jwt_auth_users
 from fastapi.staticfiles import StaticFiles
 
 # Crear una instancia de la aplicación FastAPI
@@ -11,6 +11,9 @@ app = FastAPI()
 # Routers
 app.include_router(products.router)
 app.include_router(users.router)
+app.include_router(basic_auth_users.router)
+app.include_router(jwt_auth_users.router)
+
 # Forma para exponer recursos estaticos: /static/images/mouredev_curso_python.jpg
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
