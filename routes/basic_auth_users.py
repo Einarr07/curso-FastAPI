@@ -16,14 +16,14 @@ class UserDB(User):
     password: str
 
 users_db = {
-    "hugo": {
+    "Hugo_champ": {
         "user_name": "Hugo_champ",
         "full_name": "Hugo Paredez",
         "email": "hugo.paredez@gmail.com",
         "disabled": False,
         "password": "123456"
     },
-    "hugo2": {
+    "Hugo_champ2": {
         "user_name": "Hugo_champ2",
         "full_name": "Hugo Paredez 2",
         "email": "hugo.paredez@gmail.com",
