@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException, status
 from db.models.user import User  # Modelo de usuario
 from db.schemas.user import user_schema, users_schemas  # Esquemas para serialización/deserialización de usuarios
-from db.client import db_client  # Cliente de la base de datos
+from db.client import db  # Cliente de la base de datos
 from bson import ObjectId  # Para trabajar con ObjectId de MongoDB
 
 # Definición del enrutador
@@ -19,7 +19,7 @@ users_list = []
 def search_user(field: str, key):
     try:
         # Buscar un usuario en la base de datos
-        user = db_client.local.users.find_one({field: key})
+        user = db.users.find_one({field: key})
         # Si se encuentra, retornar el usuario como instancia del modelo User
         return User(**user_schema(user))
     except:
@@ -30,7 +30,7 @@ def search_user(field: str, key):
 @router.get("/", response_model=list[User])
 async def users():
     # Retornar una lista de todos los usuarios, transformados según el esquema definido
-    return users_schemas(db_client.local.users.find())
+    return users_schemas(db.users.find())
 
 # Definir una ruta GET para obtener un usuario por su ID
 @router.get("/{id}")
@@ -56,10 +56,10 @@ async def create_user(user: User):
     del user_dict["id"]
 
     # Insertar el nuevo usuario en la base de datos y obtener su ID
-    id = db_client.local.users.insert_one(user_dict).inserted_id
+    id = db.users.insert_one(user_dict).inserted_id
 
     # Buscar y retornar el usuario recién creado
-    new_user = user_schema(db_client.local.users.find_one({"_id": id}))
+    new_user = user_schema(db.users.find_one({"_id": id}))
 
     return User(**new_user)
 
@@ -72,7 +72,7 @@ async def update_user(user: User):
     
     try:
         # Buscar y reemplazar el usuario en la base de datos
-        updated_user = db_client.local.users.find_one_and_replace(
+        updated_user = db.users.find_one_and_replace(
             {"_id": ObjectId(user_id)},
             user_dict,
             return_document=True
@@ -91,7 +91,7 @@ async def update_user(user: User):
 @router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(id: str):
     # Buscar y eliminar el usuario cuyo ID coincide con el proporcionado
-    found = db_client.local.users.find_one_and_delete({"_id": ObjectId(id)})
+    found = db.users.find_one_and_delete({"_id": ObjectId(id)})
     
     # Si no se encuentra el usuario, retornar un mensaje de error
     if not found:

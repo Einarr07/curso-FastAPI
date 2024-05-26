@@ -15,6 +15,7 @@ app.include_router(basic_auth_users.router)
 app.include_router(jwt_auth_users.router)
 app.include_router(users_db.router)
 
+
 # Forma para exponer recursos estaticos: /static/images/mouredev_curso_python.jpg
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
